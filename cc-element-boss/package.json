@@ -1,0 +1,9 @@
+{
+  "name": "Element Boss",
+  "main": "mod.js",
+  "version": "0.1.0",
+  "dependencies": {
+    "ccloader": "^2.7.3",
+    "Simplify": "^2.1.0"
+  }
+}

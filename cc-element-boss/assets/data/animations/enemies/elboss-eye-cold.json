@@ -1,0 +1,102 @@
+{
+    "DOCTYPE": "MULTI_DIR_ANIMATION",
+    "namedSheets": {
+        "move": {
+            "src": "media/entity/enemy/boss/elboss-eye.png",
+            "offX": 0,
+            "offY": 96,
+            "width": 32,
+            "height": 32
+        }
+    },
+    "shapeType": "Y_FLAT",
+    "SUB": [
+        {
+            "sheet": "move",
+            "dirs": 8,
+            "flipX": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1
+            ],
+            "SUB": [
+                {
+                    "dirs": "8",
+                    "flipX": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1
+                    ],
+                    "tileOffsets": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        3,
+                        2,
+                        1
+                    ],
+                    "dirOffsets": [
+                        [
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            -1,
+                            0,
+                            0
+                        ],
+                        [
+                            -1,
+                            0,
+                            0
+                        ],
+                        [
+                            -1,
+                            0,
+                            0
+                        ]
+                    ],
+		    "name": "eye",
+                    "time": 0.05,
+                    "repeat": true,
+                    "frames": [
+                        0
+                    ]
+                }
+            ]
+        }
+    ]
+}

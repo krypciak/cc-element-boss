@@ -1,0 +1,2131 @@
+{
+    "level": 60,
+    "params": {
+        "hp": 100000,
+        "attack": 225,
+        "defense": 275,
+        "focus": 250,
+        "elemFactor": [
+            1.25,
+            0.5,
+            1,
+            1
+        ],
+        "statusInflict": [
+            1.3,
+            0,
+            0,
+            0
+        ],
+        "statusEffect": [
+            0.125,
+            0.05,
+            0.1,
+            0.1
+        ]
+    },
+    "elementModes": {
+        "COLD": {
+            "hp": 100000,
+            "attack": 225,
+            "defense": 275,
+            "focus": 250,
+            "elemFactor": [
+                1.25,
+                0.5,
+                1,
+                1
+            ],
+            "statusInflict": [
+                1.3,
+                0,
+                0,
+                0
+            ],
+            "statusEffect": [
+                0.125,
+                0.05,
+                0.1,
+                0.1
+            ]
+        }
+    },
+    "credit": 2500,
+    "exp": 250,
+    "maxSp": 8,
+    "enduranceScale": 10,
+    "healDropRate": 0,
+    "boss": true,
+    "bossLabel": {
+        "en_US": "Cold"
+    },
+    "bossOrder": 1,
+    "padding": {
+        "x": 0,
+        "y": 0
+    },
+    "material": "METAL",
+    "aiGroup": "",
+    "aiLearnType": "REGULAR",
+    "targetDetect": {
+        "onDistance": true,
+        "detectDistance": 40000,
+        "loseDistance": 40000
+    },
+    "hpBreaks": [
+        {
+            "hp": 0.6667,
+            "healDrop": 0.25
+        },
+        {
+            "hp": 0.3333,
+            "healDrop": 0.25
+        }
+    ],
+    "size": {
+        "x": 22,
+        "y": 22,
+        "z": 18
+    },
+    "anims": "enemies.elboss-eye-cold",
+    "defaultState": "IDLE",
+    "walkConfigs": {
+        "normal": {
+            "idle": "eye",
+            "move": "eye",
+            "damage": "eye"
+        }
+    },
+    "_wm": null,
+    "walkAnims": "normal",
+    "maxVel": 200,
+    "shadow": 16,
+    "hitStable": "NONE",
+    "enabledReactions": [
+        "HP_BREAK",
+        "KILL_HIT",
+	"MINI_BREAK"
+    ],
+    "DOCTYPE": "ENEMY",
+    "trackers": {
+        "shieldBreak": {
+            "target": 0.1,
+            "scaleDmgFactor": true,
+            "scaleEnemyFactor": true,
+            "noStateReset": false,
+            "type": "HIT"
+        },
+        "brakeOver": {
+            "target": 4,
+            "initRandom": 0,
+            "resetRandom": 0,
+            "hpBreakFactor": [
+                1.5,
+                1.2,
+                1
+            ],
+            "noStateReset": false,
+            "type": "TIME"
+        }
+    },
+    "states": {
+       "PASSIVE_INVIS": {
+            "weight": -1,
+            "hitIgnore": true,
+            "enabledReactions": [
+            ],
+            "aggression": "PEACEFUL",
+            "annotate": {
+                "active": "NONE",
+                "passive": "IMMUNE",
+                "weapon": "ANY",
+                "element": "ANY",
+                "extra": []
+            },
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "name": "tmp.flex",
+                            "negated": false,
+                            "type": "ATTRIB_IS_TRUE"
+                        }
+                    ],
+                    "postSwitchState": "FLEX"
+                },
+                {
+                    "action": "Idle"
+                }
+            ]
+        },
+       "BROKEN": {
+            "weight": -1,
+            "hitIgnore": true,
+            "enabledReactions": [
+            ],
+            "annotate": {
+                "active": "NONE",
+                "passive": "IMMUNE",
+                "weapon": "ANY",
+                "element": "ANY",
+                "extra": []
+            },
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "ENTERED_STATE"
+                        }
+                    ],
+                    "action": "HpBreak"
+                },
+                {
+                    "req": [
+                        {
+                            "condition": "tmp.elementsBroken == 0",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "postSwitchState": "FLEX"
+                },
+                {
+                    "action": "Idle"
+                }
+            ]
+        },
+        "FLEX": {
+            "enabledReactions": [
+                "HP_BREAK",
+                "KILL_HIT"
+            ],
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "ENTERED_STATE"
+                        }
+                    ],
+                    "action": "Flex"
+                },
+                {
+                    "req": [
+                        {
+                            "condition": "!tmp.elementBossCutscenePlaying",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "postSwitchState": "DEFAULT"
+                },
+                {
+                    "action": "Idle"
+                }
+            ]
+        },
+        "MINIBRAKE": {
+            "enabledReactions": [
+                "HP_BREAK",
+                "KILL_HIT",
+                "BREAK"
+            ],
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "ENTERED_STATE"
+                        }
+                    ],
+                    "action": "miniWeakStart"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "TRACKER_READY",
+                            "name": "brakeOver"
+                        }
+                    ],
+                    "action": "weakEnd",
+                    "preSwitchState": "DEFAULT"
+                },
+                {
+                    "req": [
+                        {
+                            "min": 0,
+                            "max": 64,
+                            "negated": false,
+                            "type": "TARGET_DISTANCE"
+                        }
+                    ],
+                    "action": "weakAdjust"
+                },
+                {
+                    "action": "Idle"
+                }
+            ]
+        },
+        "BRAKE": {
+            "enabledReactions": [
+                "HP_BREAK",
+                "KILL_HIT"
+            ],
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "ENTERED_STATE"
+                        }
+                    ],
+                    "action": "weakStart"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "type": "TRACKER_READY",
+                            "name": "brakeOver"
+                        }
+                    ],
+                    "action": "weakEnd",
+                    "preSwitchState": "FLEX"
+                },
+                {
+                    "req": [
+                        {
+                            "min": 0,
+                            "max": 64,
+                            "negated": false,
+                            "type": "TARGET_DISTANCE"
+                        }
+                    ],
+                    "action": "weakAdjust"
+                },
+                {
+                    "action": "Idle"
+                }
+            ]
+        },
+        "IDLE": {
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementBossCutscenePlaying",
+                            "type": "!VAR_CONDITION"
+                        }
+                    ],
+                    "postSwitchState": "DEFAULT"
+                },
+		{
+                    "action": "Idle"
+		}
+            ]
+        },
+        "DEFAULT": {
+            "choices": [
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementBossCutscenePlaying",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "postSwitchState": "IDLE"
+                },
+                {
+                    "req": [
+                        {
+                            "min": 0,
+                            "max": 96,
+                            "negated": false,
+                            "type": "TARGET_DISTANCE"
+                        }
+                    ],
+                    "action": "Adjust"
+                },
+                {
+                    "req": [
+                        {
+                            "min": 0,
+                            "max": 160,
+                            "negated": false,
+                            "type": "!TARGET_DISTANCE"
+                        }
+                    ],
+                    "action": "AdjustClose"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 2,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken > 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack3",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "SOMETIMES"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 2,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken == 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack3",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "RARE"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 2,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken < 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack3",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "VERY_RARE"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 1,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken > 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack2",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "NORMAL"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 1,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken == 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack2",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "SOMETIMES"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "!tmp.attack3",
+                            "type": "VAR_CONDITION"
+                        },
+                        {
+                            "min": 1,
+                            "negated": false,
+                            "type": "HP_BREAK"
+                        },
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken < 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack2",
+                    "postSwitchState": "MINIBRAKE",
+                    "frequency": "RARE"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken >= 2",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack1",
+                    "frequency": "OFTEN"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken == 1",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack1",
+                    "frequency": "NORMAL"
+                },
+                {
+                    "req": [
+                        {
+                            "negated": false,
+                            "condition": "tmp.elementsBroken == 0",
+                            "type": "VAR_CONDITION"
+                        }
+                    ],
+                    "action": "Attack1",
+                    "frequency": "SOMETIMES"
+                },
+                {
+                    "action": "MoveAround"
+                }
+            ]
+        }
+    },
+    "proxies": {
+        "icicleSmall": {
+            "animation": {
+                "shapeType": "Y_FLAT",
+                "wallY": 1,
+                "frames": [
+                    0
+                ],
+                "SUB": [
+                    {   
+                        "name": "default",
+                        "pivot": {
+                            "x": 20,
+                            "y": 40
+                        },
+                        "offset": {
+                            "x": 0,
+                            "y": -4,
+                            "z": 0
+                        },
+                        "gfxOffset": {
+                            "x": 0,
+                            "y": 8
+                        },
+                        "sheet": { 
+                            "src": "media/entity/effects/icicles.png  ",
+                            "offX": 88,
+                            "offY": 0,
+                            "width": 40,
+                            "height": 56
+                        }
+                    },  
+                    {   
+                        "name": "alt",
+                        "pivot": {
+                            "x": 20,
+                            "y": 40
+                        },
+                        "sheet": { 
+                            "src": "media/entity/effects/icicles.png  ",
+                            "offX": 88,
+                            "offY": 56,
+                            "width": 48,
+                            "height": 40
+                        }
+                    }
+                ]
+            },
+            "copyOwnerAnims": false,
+            "breakType": "COMBATANT",
+            "action": [
+                {
+                    "type": "SHOW_RANDOM_ANIMATION",
+                    "randAnims": [
+                        "default",
+                        "alt"
+                    ]
+                },
+                {
+                    "duration": 0,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.icicles",
+                        "name": "smallAppear"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    } 
+                },
+                {
+                    "value": 0, 
+                    "type": "SET_SPEED"
+                },
+                {
+                    "time": 0.3,
+                    "type": "WAIT"
+                },  
+                {
+                    "time": 10,
+                    "cancelOnHit": true,
+                    "orthoDirFactor": 0,
+                    "ignoreLastHit": false,
+                    "type": "TACKLE",
+                    "attack": {
+                        "type": "MEDIUM",
+                        "element": "COLD",
+                        "damageFactor": 1,
+                        "reverse": false,
+                        "spFactor": 0,
+                        "status": 1,
+                        "guardable": "",
+                        "skillBonus": "MELEE_DMG"
+                    }
+                }
+            ],
+            "invisible": true,
+            "hp": 0.5,
+            "killEffect": {
+                "sheet": "specials.icicles",
+                "name": "icicleExplodeSmall"
+            },
+            "stickToSource": "NONE",
+            "stickFaceAlign": false,
+            "group": "wall",
+            "size": {
+                "x": 24,
+                "y": 24,
+                "z": 24
+            },
+            "config": {
+                "collType": "IGNORE"
+            },
+            "type": "GENERIC"
+        },
+        "icicleBig": {
+            "animation": {
+                "shapeType": "Z_EXPAND",
+                "wallY": 1,
+                "frames": [
+                    0
+                ],
+                "SUB": [
+                    {
+                        "name": "default",
+                        "pivot": {
+                            "x": 36,
+                            "y": 64
+                        },
+                        "offset": {
+                            "x": 0,
+                            "y": 8,
+                            "z": 0
+                        },
+                        "sheet": {
+                            "src": "media/entity/effects/icicles.png  ",
+                            "offX": 0,
+                            "offY": 80,
+                            "width": 72,
+                            "height": 88
+                        }
+                    }
+                ]
+            },
+            "copyOwnerAnims": false,
+            "breakType": "COMBATANT",
+            "action": [
+                {
+                    "type": "SHOW_RANDOM_ANIMATION",
+                    "randAnims": [
+                        "default",
+                        "alt"
+                    ]
+                },
+                {
+                    "duration": 0,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.icicles",
+                        "name": "bigAppear"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "duration": 0,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.icicles",
+                        "name": "icicleCharge"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "value": 0,
+                    "type": "SET_SPEED"
+                },
+                {
+                    "time": 0.7,
+                    "type": "WAIT"
+                },
+                {
+                    "searchType": "CLOSE_RANGE",
+                    "type": "SET_CLOSE_TEMP_TARGET"
+                },
+                {
+                    "value": true,
+                    "immediately": true,
+                    "type": "FACE_TO_TARGET"
+                },
+                {
+                    "align": "BOTTOM",
+                    "type": "SHOOT_PROXY",
+                    "proxy": "icicleSubLine",
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "time": 0.05,
+                    "type": "WAIT"
+                }
+            ],
+            "invisible": true,
+            "hp": 0,
+            "killEffect": {
+                "sheet": "specials.icicles",
+                "name": "icicleExplodeBig"
+            },
+            "stickToSource": "NONE",
+            "stickFaceAlign": false,
+            "group": "",
+            "size": {
+                "x": 32,
+                "y": 32,
+                "z": 32
+            },
+            "config": {
+                "collType": "IGNORE"
+            },
+            "type": "GENERIC"
+        },
+        "icicleSubLine": {
+            "copyOwnerAnims": false,
+            "breakType": "COMBATANT",
+            "action": [
+                {
+                    "time": 0.05,
+                    "stopBeforeEdge": false,
+                    "type": "MOVE_FORWARD"
+                },
+                {
+                    "align": "BOTTOM",
+                    "centralAngle": 0,
+                    "angleVary": 0,
+                    "startDistCollide": "NONE",
+                    "random": false,
+                    "count": 8,
+                    "duration": 0.65,
+                    "clockwise": false,
+                    "flipLeftFace": 0,
+                    "offsetArea": {
+                        "x": 16,
+                        "y": 16
+                    },
+                    "circularArea": true,
+                    "uniformDir": 0,
+                    "delay": 0,
+                    "repeat": false,
+                    "ballCount": 20,
+                    "type": "SHOOT_PROXY_RANGE",
+                    "proxy": "icicleSmall",
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "value": true,
+                    "type": "FACE_TO_TARGET"
+                },
+                {
+                    "value": 0.5,
+                    "type": "FACE_TO_TARGET_SPEED"
+                },
+                {
+                    "time": 0.65,
+                    "stopBeforeEdge": false,
+                    "type": "MOVE_FORWARD"
+                }
+            ],
+            "invisible": false,
+            "hp": 0,
+            "stickToSource": "NONE",
+            "stickFaceAlign": false,
+            "group": "",
+            "size": {
+                "x": 16,
+                "y": 16,
+                "z": 16
+            },
+            "config": {
+                "collType": "IGNORE",
+                "maxVel": 300
+            },
+            "type": "GENERIC"
+        },
+        "icicleLineLong": {
+            "copyOwnerAnims": false,
+            "breakType": "COMBATANT",
+            "action": [
+                {
+                    "time": 0.05,
+                    "type": "MOVE_FORWARD"
+                },
+                {
+                    "align": "BOTTOM",
+                    "centralAngle": 0,
+                    "angleVary": 0,
+                    "random": false,
+                    "count": 14,
+                    "duration": 1.1,
+                    "clockwise": false,
+                    "flipLeftFace": 0,
+                    "offsetArea": {
+                        "x": 16,
+                        "y": 16
+                    },
+                    "circularArea": true,
+                    "uniformDir": 0,
+                    "delay": 0,
+                    "ballCount": 20,
+                    "type": "SHOOT_PROXY_RANGE",
+                    "proxy": "icicleSmall",
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "value": true,
+                    "type": "FACE_TO_TARGET"
+                },
+                {
+                    "value": 0.5,
+                    "type": "FACE_TO_TARGET_SPEED"
+                },
+                {
+                    "time": 1.1,
+                    "type": "MOVE_FORWARD"
+                },
+                {
+                    "align": "BOTTOM",
+                    "centralAngle": 0,
+                    "angleVary": 0,
+                    "random": false,
+                    "count": 1,
+                    "duration": 0.1,
+                    "clockwise": false,
+                    "flipLeftFace": 0,
+                    "offsetArea": {
+                        "x": 16,
+                        "y": 16
+                    },
+                    "circularArea": true,
+                    "uniformDir": 0,
+                    "delay": 0,
+                    "ballCount": 1,
+                    "type": "SHOOT_PROXY_RANGE",
+                    "proxy": "icicleHuge",
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "time": 0.1,
+                    "type": "MOVE_FORWARD"
+                }
+            ],
+            "invisible": false,
+            "hp": 0,
+            "stickToSource": "NONE",
+            "stickFaceAlign": false,
+            "group": "",
+            "size": {
+                "x": 16,
+                "y": 16,
+                "z": 16
+            },
+            "config": {
+                "collType": "IGNORE",
+                "maxVel": 300
+            },
+            "type": "GENERIC"
+        },
+        "icicleHuge": {
+            "animation": {
+                "shapeType": "Z_EXPAND",
+                "wallY": 0,
+                "frames": [
+                    0
+                ],
+                "SUB": [
+                    {
+                        "name": "default",
+                        "pivot": {
+                            "x": 36,
+                            "y": 136
+                        },
+                        "offset": {
+                            "x": 0,
+                            "y": 8,
+                            "z": 0
+                        },
+                        "sheet": {
+                            "src": "media/entity/effects/icicles.png",
+                            "offX": 256,
+                            "offY": 8,
+                            "width": 72,
+                            "height": 160
+                        }
+                    }
+                ]
+            },
+            "copyOwnerAnims": false,
+            "breakType": "NEVER",
+            "action": [
+                {
+                    "time": 0,
+                    "removeEntityStatic": false,
+                    "type": "CLEAR_SLOW_MOTION"
+                },
+                {
+                    "zoomType": "LIGHT",
+                    "fadeIn": 0,
+                    "duration": 0.2,
+                    "fadeOut": 0.2,
+                    "type": "SET_ZOOM_BLUR"
+                },
+                {
+                    "group": "aura",
+                    "type": "CLEAR_EFFECTS"
+                },
+                {
+                    "duration": -1,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "group": "aura",
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.cold",
+                        "name": "icicleAura2"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 80
+                    }
+                },
+                {
+                    "align": "BOTTOM",
+                    "radius": 48,
+                    "yScale": 0,
+                    "zHeight": 96,
+                    "centralAngle": 1,
+                    "duration": 0.05,
+                    "expandRadius": 0,
+                    "alwaysFull": true,
+                    "clockwise": false,
+                    "flipLeftFace": 0,
+                    "rectangular": false,
+                    "repeat": true,
+                    "uniformHitDir": true,
+                    "fixPos": false,
+                    "checkCollision": true,
+                    "type": "CIRCLE_ATTACK",
+                    "attack": {
+                        "type": "MASSIVE",
+                        "element": "COLD",
+                        "damageFactor": 7,
+                        "fly": "MASSIVE+",
+                        "reverse": false,
+                        "stunSteps": [
+                            {
+                                "type": "START_LOCK"
+                            },
+                            {
+                                "distance": 8,
+                                "speed": 200,
+                                "maxTime": 0,
+                                "type": "PULL"
+                            },
+                            {
+                                "accel": 1,
+                                "offZ": 80,
+                                "maxTime": 0,
+                                "type": "Z_PULL"
+                            }
+                        ],
+                        "status": 0.9,
+                        "hints": [
+                            "NO_PUZZLE"
+                        ],
+                        "guardable": "",
+                        "skillBonus": "MELEE_DMG",
+                        "limiter": ""
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "duration": 0,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.cold",
+                        "name": "icicleBoom"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 80
+                    }
+                },
+                {
+                    "duration": 0,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.icicles",
+                        "name": "hugeAppear"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "value": 0,
+                    "type": "SET_SPEED"
+                },
+                {
+                    "time": 0.175,
+                    "type": "WAIT"
+                },
+                {
+                    "type": "STOP_REPEATING_FORCE"
+                },
+                {
+                    "time": 0.825,
+                    "type": "WAIT"
+                },
+                {
+                    "zoomType": "LIGHT",
+                    "fadeIn": 0,
+                    "duration": 0.2,
+                    "fadeOut": 0.2,
+                    "type": "SET_ZOOM_BLUR"
+                },
+                {
+                    "selectType": "PREVIOUSLY_HIT",
+                    "hitDir": "TOWARD",
+                    "align": "BOTTOM",
+                    "hitCount": 1,
+                    "hitDelay": 0,
+                    "type": "DIRECT_HIT",
+                    "attack": {
+                        "type": "MASSIVE",
+                        "element": "COLD",
+                        "damageFactor": 7,
+                        "fly": "MASSIVE",
+                        "reverse": false,
+                        "stunSteps": [
+                            {
+                                "type": "BLOCK_XY"
+                            },
+                            {
+                                "type": "END_LOCK"
+                            }
+                        ],
+                        "status": 0.9,
+                        "hints": [
+                            "NO_PUZZLE"
+                        ],
+                        "guardable": "",
+                        "skillBonus": "MELEE_DMG",
+                        "limiter": ""
+                    }
+                },
+                {
+                    "duration": 0.4,
+                    "align": "BOTTOM",
+                    "rotateFace": 0,
+                    "flipLeftFace": false,
+                    "wait": false,
+                    "waitSkip": 0,
+                    "actionDetached": false,
+                    "fixPos": false,
+                    "type": "SHOW_EFFECT",
+                    "effect": {
+                        "sheet": "specials.icicles",
+                        "name": "icicleExplodeHuge"
+                    },
+                    "offset": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "time": 0.4,
+                    "type": "WAIT"
+                }
+            ],
+            "invisible": true,
+            "hp": 0,
+            "stickToSource": "NONE",
+            "stickFaceAlign": false,
+            "group": "",
+            "timeDisconnect": false,
+            "size": {
+                "x": 16,
+                "y": 16,
+                "z": 112
+            },
+            "config": {
+                "collType": "IGNORE"
+            },
+            "type": "GENERIC"
+        }
+    },
+    "actions": {
+        "Idle": [
+            {
+                "minTime": 0.5,
+                "maxTime": 0.7,
+                "type": "WAIT_RANDOM"
+            }
+        ],
+        "MoveAround": [
+            {
+                "maxTime": 0.6,
+		"distance": 64,
+		"distVariance": 16,
+		"forceMinTargetDistance": 48,
+		"planOnly": false,
+                "type": "NAVIGATE_SIDEWAYS_TARGET"
+            }
+        ],
+        "Adjust": [
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {   
+                "maxTime": 1,
+                "forceTime": false,
+                "distance": 200,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_ESCAPE_TARGET"
+            }
+        ],
+        "AdjustClose": [
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {   
+                "maxTime": 0.2,
+                "forceTime": false,
+                "distance": 64,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_TO_TARGET"
+            }
+        ],
+        "weakAdjust": [
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {
+                "value": 0.25,
+                "type": "SET_RELATIVE_SPEED"
+            },
+            {   
+                "maxTime": 1,
+                "forceTime": false,
+                "distance": 120,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_ESCAPE_TARGET"
+            }
+        ],
+        "miniWeakStart": [
+            {
+               "changeType": "set",
+               "type": "CHANGE_VAR_BOOL",
+               "varName": "tmp.attack3",
+               "value": false
+            },
+            {   
+                "duration": -1,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "weak",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "enemy",
+                    "name": "angry2"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "type": "RESET_TRACKER",
+                "tracker": "brakeOver"
+            }
+        ],
+        "weakStart": [
+            {
+               "changeType": "set",
+               "type": "CHANGE_VAR_BOOL",
+               "varName": "tmp.attack3",
+               "value": false
+            },
+            {
+                "group": "weak",
+                "type": "CLEAR_EFFECTS"
+            },
+            {
+                "group": "flex",
+                "type": "CLEAR_EFFECTS"
+            },
+            {
+                "name": "full",
+                "type": "REMOVE_SHIELD"
+            },
+            {   
+                "duration": -1,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "weak",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "enemy",
+                    "name": "angry2"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "type": "RESET_TRACKER",
+                "tracker": "brakeOver"
+            }
+        ],
+        "weakEnd": [
+            {   
+                "type": "RESET_TRACKER",
+                "tracker": "shieldBreak"
+            },
+            {
+                "group": "weak",
+                "type": "CLEAR_EFFECTS"
+            }
+        ],
+        "Flex": [
+            {
+                "value": "MASSIVE",
+                "type": "SET_HIT_STABLE"
+            },
+            {
+                "duration": 0.4,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "flex",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "coldSubCharge"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 0.7,
+                "type": "WAIT"
+            },
+            {
+                "group": "flex",
+                "type": "CLEAR_EFFECTS"
+            },
+            {
+                "volume": 0.8,
+                "global": false,
+                "loop": false,
+                "sound": "media/sound/battle/enemies/mine/bot-ground-punch-ice.ogg",
+                "type": "PLAY_SOUND"
+            },
+            {
+                "name": "full",
+                "actionDetached": true,
+                "type": "ADD_SHIELD",
+                "shield": {
+                    "type": "DIRECTIONAL",
+                    "settings": {
+                        "baseFactor": 0.01,
+                        "strength": "BLOCK_ALL",
+                        "hitResist": "HEAVY",
+                        "range": 1,
+                        "back": false
+                    }
+                }
+            },
+            {
+                "duration": -1,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "flex",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "dashTrail"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "element": "COLD",
+                "skipEffect": false,
+                "type": "SET_ENEMY_ELEMENT_MODE"
+            }
+        ],
+        "Attack1": [
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {   
+                "maxTime": 1,
+                "forceTime": false,
+                "distance": 64,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_ESCAPE_TARGET"
+            },
+            {
+                "duration": 0.4,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "attack",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "coldSubCharge"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "time": 0.7,
+                "type": "WAIT"
+            },
+            {   
+                "value": 450,
+                "type": "SET_SPEED"
+            },
+            {   
+                "align": "BOTTOM",
+                "centralAngle": 0,
+                "angleVary": 0,
+                "startDistCollide": false,
+                "random": false,
+                "count": 3,
+                "duration": 0.1,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": true,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0, 
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "duration": 0.5,
+                "align": "CENTER",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "dashTrail"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "minTime": 0.5,
+                "maxTime": 0.5,
+                "type": "MOVE_RANDOM"
+            },
+            {
+                "type": "STOP_REPEATING_FORCE"
+            },
+            {
+                "duration": 0,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "group": "attack",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "coldExplode"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "align": "BOTTOM",
+                "centralAngle": 1,
+                "angleVary": 0,
+                "startDist": 24,
+                "startDistCollide": "DROP",
+                "limitRangeOnColl": true,
+                "random": false,
+                "count": 8,
+                "duration": 0,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": false,
+                "maxGroundDistance": 12,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 0.55,
+                "type": "WAIT"
+	    }
+	],
+        "Attack2": [
+            {
+                "duration": -1,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "enemy",
+                    "name": "special1"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {   
+                "maxTime": 1,
+                "forceTime": false,
+                "distance": 64,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_ESCAPE_TARGET"
+            },
+            {
+                "duration": 0.4,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": true,
+                "group": "attack",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "starCharge"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "maxTime": 1.2,
+                "forceTime": true,
+                "distance": 64,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_ESCAPE_TARGET"
+            },
+            {   
+                "value": 650,
+                "type": "SET_SPEED"
+            },
+            {   
+                "align": "BOTTOM",
+                "centralAngle": 0,
+                "angleVary": 0,
+                "startDistCollide": false,
+                "random": false,
+                "count": 3,
+                "duration": 0.1,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": true,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0, 
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "align": "BOTTOM",
+                "centralAngle": 0,
+                "angleVary": 0,
+                "startDistCollide": false,
+                "random": false,
+                "count": 1,
+                "duration": 0.3,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": true,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleBig",
+                "offset": {
+                    "x": 0, 
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "duration": 0.5,
+                "align": "CENTER",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "dashTrail2"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "minTime": 0.5,
+                "maxTime": 0.5,
+                "type": "MOVE_RANDOM"
+            },
+            {
+                "type": "STOP_REPEATING_FORCE"
+            },
+            {
+                "duration": 0,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "group": "attack",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "coldExplode"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "align": "BOTTOM",
+                "centralAngle": 1,
+                "angleVary": 0,
+                "startDist": 24,
+                "startDistCollide": "DROP",
+                "limitRangeOnColl": true,
+                "random": false,
+                "count": 8,
+                "duration": 0,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": false,
+                "maxGroundDistance": 12,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 0.2,
+                "type": "WAIT"
+            },
+            {
+                "align": "BOTTOM",
+                "centralAngle": 1,
+                "angleVary": 0,
+                "startDist": 48,
+                "startDistCollide": "DROP",
+                "limitRangeOnColl": true,
+                "random": false,
+                "count": 8,
+                "duration": 0,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": false,
+                "maxGroundDistance": 24,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 0.2,
+                "type": "WAIT"
+            },
+            {
+                "align": "BOTTOM",
+                "centralAngle": 1,
+                "angleVary": 0,
+                "startDist": 72,
+                "startDistCollide": "DROP",
+                "limitRangeOnColl": true,
+                "random": false,
+                "count": 8,
+                "duration": 0,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": false,
+                "maxGroundDistance": 36,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleSmall",
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 0.55,
+                "type": "WAIT"
+	    }
+	],
+        "Attack3": [
+	    {
+	        "reaction": "MINI_BREAK",
+	        "type": "DISABLE_REACTION"
+	    },
+	    {
+	        "reaction": "BREAK",
+	        "type": "ENABLE_REACTION"
+	    },
+            {
+               "changeType": "set",
+               "type": "CHANGE_VAR_BOOL",
+               "varName": "tmp.attack3",
+               "value": true
+	    },
+            {
+                "value": "MASSIVE",
+                "type": "SET_HIT_STABLE"
+            },
+            {   
+                "target": {
+                    "x": 408,
+                    "y": 376,
+                    "lvl": "0"
+                },
+                "maxTime": 1.2,
+                "forceTime": false,
+                "distance": 8,
+                "throwing": true,
+                "planOnly": false,
+                "targetType": "ENEMY",
+                "type": "NAVIGATE_TO_POINT"
+            },
+            {
+                "duration": -1,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "enemy",
+                    "name": "special1"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {   
+                "value": true,
+                "type": "FACE_TO_TARGET"
+            },
+            {
+                "duration": 10,
+                "align": "BOTTOM",
+                "rotateFace": 0,
+                "flipLeftFace": false,
+                "wait": false,
+                "waitSkip": 0,
+                "actionDetached": false,
+                "group": "attack",
+                "fixPos": false,
+                "type": "SHOW_EFFECT",
+                "effect": {
+                    "sheet": "specials.cold",
+                    "name": "starCharge3"
+                },
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+	    {
+	        "time": 10,
+		"type": "WAIT"
+	    },
+	    {
+	        "reaction": "BREAK",
+	        "type": "DISABLE_REACTION"
+	    },
+            {
+                "volume": 1,
+                "global": false,
+                "loop": false,
+                "speed": 0.7,
+                "type": "PLAY_SOUND",
+                "sound": "media/sound/battle/enemies/mine/bot-ground-punch-ice.ogg"
+            },
+            {
+                "zoomType": "LIGHT",
+                "fadeIn": 0.1,
+                "duration": 0.2,
+                "fadeOut": 0.2,
+                "type": "SET_ZOOM_BLUR"
+            },
+            {
+                "rumbleType": "RANDOM",
+                "name": "",
+                "duration": 0.3,
+                "power": "STRONGEST",
+                "speed": "FASTER",
+                "fade": true,
+                "type": "RUMBLE_SCREEN"
+            },
+            {
+                "align": "BOTTOM",
+                "centralAngle": 1,
+                "angleVary": 0,
+                "startDist": 24,
+                "startDistCollide": "DROP",
+                "limitRangeOnColl": true,
+                "random": false,
+                "count": 4,
+                "duration": 0,
+                "clockwise": false,
+                "flipLeftFace": 0,
+                "circularArea": false,
+                "uniformDir": 0,
+                "delay": 0,
+                "repeat": false,
+                "maxGroundDistance": 12,
+                "type": "SHOOT_PROXY_RANGE",
+                "proxy": "icicleLineLong",
+                "offset": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "time": 2,
+                "type": "WAIT"
+            },
+            {
+               "changeType": "set",
+               "type": "CHANGE_VAR_BOOL",
+               "varName": "tmp.attack3",
+               "value": false
+	    }
+        ],
+        "HpBreak": [
+            {
+                "group": "flex",
+                "type": "CLEAR_EFFECTS"
+            },
+            {
+                "group": "weak",
+                "type": "CLEAR_EFFECTS"
+            },
+            {
+                "name": "full",
+                "type": "REMOVE_SHIELD"
+            },
+            {
+                "type": "REMOVE_PLAYER_CAMERA_TARGET"
+            },
+            {
+                "element": "NEUTRAL",
+                "skipEffect": true,
+                "type": "SET_ENEMY_ELEMENT_MODE"
+            },
+            {
+                "target": {
+                    "x": 408,
+                    "y": 276,
+                    "lvl": "0"
+                },
+                "maxTime": 2,
+                "distance": 8,
+                "keepDirection": false,
+                "planOnly": false,
+                "type": "NAVIGATE_TO_POINT"
+            },
+            {
+                "target": {
+                    "x": 408,
+                    "y": 148,
+                    "lvl": "1"
+                },
+                "forceHeight": 80,
+                "type": "JUMP_TO_POINT"
+            },
+            {
+               "changeType": "add",
+               "type": "CHANGE_VAR_NUMBER",
+               "varName": "tmp.elementsBroken",
+               "value": 1
+            }
+        ],
+        "KillSqueek": [
+            {
+               "changeType": "add",
+               "type": "CHANGE_VAR_NUMBER",
+               "varName": "tmp.elementsBroken",
+               "value": 1
+            }
+        ]
+    },
+    "reactions": {
+        "HP_BREAK": {
+            "hitType": "HP_BREAK_HIT",
+            "preSwitchState": "BROKEN",
+            "blockFurtherHits": true,
+            "attackType": "MASSIVE",
+            "flyLevel": "MASSIVE",
+            "stunChange": "FORCE_STUN",
+            "alignFace": false,
+            "dramaticEffect": "HP_BREAK_ZOOM",
+            "conditions": [],
+            "ignoreFailed": false,
+            "type": "HIT_REACTION"
+        },
+        "KILL_HIT": {
+            "hitType": "KILL_HIT",
+            "preAction": "KillSqueek",
+            "blockFurtherHits": false,
+            "attackType": "BREAK",
+            "flyLevel": "MASSIVE+",
+            "stunChange": "FORCE_STUN",
+            "alignFace": false,
+            "dramaticEffect": "BOSS_ZOOM",
+            "conditions": [],
+            "ignoreFailed": false,
+            "type": "HIT_REACTION"
+        },
+        "MINI_BREAK": {
+            "hitType": "REGULAR",
+            "preSwitchState": "MINIBRAKE",
+            "blockFurtherHits": false,
+            "attackType": "MASSIVE",
+            "flyLevel": "LIGHT",
+            "stunChange": "FORCE_STUN",
+            "alignFace": false,
+            "dramaticEffect": "BREAK",
+            "conditions": [
+                {
+                    "element": "HEAT",
+                    "negated": false,
+                    "type": "ELEMENT_HIT"
+                },
+                {
+                    "negated": false,
+                    "type": "TRACKER_READY",
+                    "name": "shieldBreak"
+                }
+            ],
+            "ignoreFailed": false,
+            "viewAngle": 1,
+            "restartPrevAction": false,
+            "probability": 1,
+            "count": 0,
+            "blockTime": 1,
+            "type": "HIT_REACTION"
+        },
+	"BREAK": {
+            "hitType": "REGULAR",
+            "preSwitchState": "BRAKE",
+            "blockFurtherHits": false,
+            "attackType": "MASSIVE",
+            "flyLevel": "HEAVY",
+            "stunChange": "FORCE_STABLE",
+            "alignFace": false,
+            "dramaticEffect": "BREAK_BIG",
+            "conditions": [
+                {
+                    "negated": false,
+                    "type": "IS_SHIELDED"
+                },
+                {
+                    "hint": "STEAM",
+                    "negated": false,
+                    "type": "HAS_HINT"
+                }
+            ],
+            "ignoreFailed": false,
+            "minDistance": 0,
+            "maxDistance": 0,
+            "type": "HIT_REACTION"
+        }
+    },
+    "meta": {
+        "species": {
+            "en_US": "Eye"
+        },
+        "category": "MECHA",
+        "descriptions": [
+            {
+                "text": {
+                    "en_US": ":eyes:"
+                },
+                "condition": ""
+            }
+        ]
+    }
+}
