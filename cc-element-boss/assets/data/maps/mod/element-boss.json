@@ -135,33 +135,20 @@
         "name": "endCutscene",
         "eventType": "CUTSCENE",
         "endCondition": "tmp.bossDefeated",
-        "startCondition": "tmp.elementBossHeatDefeated && tmp.elementBossColdDefeated && tmp.elementBossShockDefeated && tmp.elementBossWaveDefeated",
+        "startCondition": "tmp.elementBossHeatDown && tmp.elementBossColdDown && tmp.elementBossShockDown && tmp.elementBossWaveDown",
         "triggerType": "ALWAYS",
         "event": [
           {
-            "entity": {
-              "player": true
-            },
-            "action": [
-              {
-                "target": {
-                  "x": 408,
-                  "y": 376,
-                  "lvl": "0"
-                },
-                "maxTime": 0,
-                "distance": 0,
-                "precise": false,
-                "planOnly": false,
-                "teleportOnFail": false,
-                "type": "NAVIGATE_TO_POINT"
-              }
-            ],
-            "repeating": false,
-            "wait": true,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
+            "mode": "SLOW",
+            "type": "PAUSE_BGM"
+          },
+          {
+            "value": false,
+            "type": "SET_FORCE_COMBAT"
+          },
+          {
+            "type": "WAIT_UNTIL_TRUE",
+            "condition": "tmp.elementBossHeatDefeated && tmp.elementBossColdDefeated && tmp.elementBossShockDefeated && tmp.elementBossWaveDefeated"
           },
           {
             "entity": {
@@ -250,7 +237,7 @@
             "type": "WAIT_UNTIL_ACTION_DONE"
           },
           {
-            "mode": "IMMEDIATELY",
+            "mode": "SLOW",
             "delayed": false,
             "type": "RESUME_DEFAULT_BGM"
           },
@@ -270,67 +257,18 @@
       "level": 0,
       "settings": {
         "name": "heatBossDown",
-        "eventType": "COMBAT_CUTSCENE",
-        "endCondition": "tmp.elementBossHeatDefeated",
+        "eventType": "PARALLEL",
+        "mapId": "1001",
+        "endCondition": "false",
         "startCondition": "tmp.elementBossHeatDown",
-        "triggerType": "ALWAYS",
+        "triggerType": "ONCE_PER_ENTRY",
         "event": [
           {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": true
-          },
-          {
             "entity": {
               "global": true,
-              "name": "element-boss-cold"
+              "name": "element-boss-heat"
             },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
+            "type": "REMOVE_PLAYER_CAMERA_TARGET"
           },
           {
             "withElse": false,
@@ -338,28 +276,20 @@
             "condition": "tmp.elementBossHeatDown && tmp.elementBossColdDown && tmp.elementBossShockDown && tmp.elementBossWaveDown",
             "thenStep": [
               {
-                "mode": "SLOW",
-                "type": "PAUSE_BGM"
-              },
-              {
-                "value": false,
-                "type": "SET_FORCE_COMBAT"
+                "entity": {
+                  "global": true,
+                  "name": "element-boss-heat"
+                },
+                "offsetX": 0,
+                "offsetY": 0,
+                "speed": "FAST",
+                "transition": "EASE_IN_OUT",
+                "wait": true,
+                "waitSkip": 0,
+                "zoom": 1,
+                "type": "SET_CAMERA_TARGET"
               }
             ]
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-heat"
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
           },
           {
             "entity": {
@@ -384,44 +314,7 @@
           },
           {
             "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "volume": 1,
-            "name": "",
-            "loop": false,
-            "offset": 0,
-            "startTime": 0,
-            "type": "PLAY_SOUND",
-            "sound": "media/sound/scenes/designer-emerge.ogg"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "alpha": 1,
-            "time": 3,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 2,
-            "type": "WAIT"
-          },
-          {
-            "name": "slow",
-            "factor": 0.2,
-            "time": 2,
-            "type": "ADD_SLOW_MOTION"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 2,
+            "time": 4,
             "type": "WAIT"
           },
           {
@@ -432,59 +325,9 @@
             "type": "CLEAR_EFFECTS"
           },
           {
-            "name": "slow",
-            "time": 0.2,
-            "type": "CLEAR_SLOW_MOTION"
-          },
-          {
             "ignoreSlowDown": true,
             "type": "WAIT",
-            "time": 0.2
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-heat"
-            },
-            "duration": 0,
-            "align": "CENTER",
-            "group": "",
-            "wait": false,
-            "waitSkip": 0,
-            "effect": {
-              "sheet": "enemies.boss-defeat",
-              "name": "dieSparkle"
-            },
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "type": "SHOW_EFFECT"
-          },
-          {
-            "ignoreSlowDown": false,
-            "type": "WAIT",
-            "time": 0.05
-          },
-          {
-            "alpha": 0,
-            "time": 1.5,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 1.5,
-            "type": "WAIT"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-heat"
-            },
-            "type": "REMOVE_PLAYER_CAMERA_TARGET"
+            "time": 2.75
           },
           {
             "entity": {
@@ -494,29 +337,10 @@
             "type": "MANUAL_COMBATANT_KILL"
           },
           {
-            "entity": {
-              "player": true
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
-          },
-          {
             "changeType": "set",
             "type": "CHANGE_VAR_BOOL",
             "varName": "tmp.elementBossHeatDefeated",
             "value": true
-          },
-          {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": false
           }
         ]
       }
@@ -528,67 +352,18 @@
       "level": 0,
       "settings": {
         "name": "coldBossDown",
-        "eventType": "COMBAT_CUTSCENE",
-        "endCondition": "tmp.elementBossColdDefeated",
+        "eventType": "PARALLEL",
+        "mapId": "1002",
+        "endCondition": "false",
         "startCondition": "tmp.elementBossColdDown",
-        "triggerType": "ALWAYS",
+        "triggerType": "ONCE_PER_ENTRY",
         "event": [
           {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": true
-          },
-          {
             "entity": {
               "global": true,
-              "name": "element-boss-heat"
+              "name": "element-boss-cold"
             },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
+            "type": "REMOVE_PLAYER_CAMERA_TARGET"
           },
           {
             "withElse": false,
@@ -596,28 +371,20 @@
             "condition": "tmp.elementBossHeatDown && tmp.elementBossColdDown && tmp.elementBossShockDown && tmp.elementBossWaveDown",
             "thenStep": [
               {
-                "mode": "SLOW",
-                "type": "PAUSE_BGM"
-              },
-              {
-                "value": false,
-                "type": "SET_FORCE_COMBAT"
+                "entity": {
+                  "global": true,
+                  "name": "element-boss-cold"
+                },
+                "offsetX": 0,
+                "offsetY": 0,
+                "speed": "FAST",
+                "transition": "EASE_IN_OUT",
+                "wait": true,
+                "waitSkip": 0,
+                "zoom": 1,
+                "type": "SET_CAMERA_TARGET"
               }
             ]
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-cold"
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
           },
           {
             "entity": {
@@ -642,44 +409,7 @@
           },
           {
             "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "volume": 1,
-            "name": "",
-            "loop": false,
-            "offset": 0,
-            "startTime": 0,
-            "type": "PLAY_SOUND",
-            "sound": "media/sound/scenes/designer-emerge.ogg"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "alpha": 1,
-            "time": 3,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 2,
-            "type": "WAIT"
-          },
-          {
-            "name": "slow",
-            "factor": 0.2,
-            "time": 2,
-            "type": "ADD_SLOW_MOTION"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 2,
+            "time": 4,
             "type": "WAIT"
           },
           {
@@ -690,59 +420,9 @@
             "type": "CLEAR_EFFECTS"
           },
           {
-            "name": "slow",
-            "time": 0.2,
-            "type": "CLEAR_SLOW_MOTION"
-          },
-          {
             "ignoreSlowDown": true,
             "type": "WAIT",
-            "time": 0.2
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-cold"
-            },
-            "duration": 0,
-            "align": "CENTER",
-            "group": "",
-            "wait": false,
-            "waitSkip": 0,
-            "effect": {
-              "sheet": "enemies.boss-defeat",
-              "name": "dieSparkle"
-            },
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "type": "SHOW_EFFECT"
-          },
-          {
-            "ignoreSlowDown": false,
-            "type": "WAIT",
-            "time": 0.05
-          },
-          {
-            "alpha": 0,
-            "time": 1.5,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 1.5,
-            "type": "WAIT"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-cold"
-            },
-            "type": "REMOVE_PLAYER_CAMERA_TARGET"
+            "time": 2.75
           },
           {
             "entity": {
@@ -752,29 +432,10 @@
             "type": "MANUAL_COMBATANT_KILL"
           },
           {
-            "entity": {
-              "player": true
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
-          },
-          {
             "changeType": "set",
             "type": "CHANGE_VAR_BOOL",
             "varName": "tmp.elementBossColdDefeated",
             "value": true
-          },
-          {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": false
           }
         ]
       }
@@ -786,67 +447,18 @@
       "level": 0,
       "settings": {
         "name": "shockBossDown",
-        "eventType": "COMBAT_CUTSCENE",
-        "endCondition": "tmp.elementBossShockDefeated",
+        "eventType": "PARALLEL",
+        "mapId": "1003",
+        "endCondition": "false",
         "startCondition": "tmp.elementBossShockDown",
-        "triggerType": "ALWAYS",
+        "triggerType": "ONCE_PER_ENTRY",
         "event": [
           {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": true
-          },
-          {
             "entity": {
               "global": true,
-              "name": "element-boss-heat"
+              "name": "element-boss-shock"
             },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-cold"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
+            "type": "REMOVE_PLAYER_CAMERA_TARGET"
           },
           {
             "withElse": false,
@@ -854,28 +466,20 @@
             "condition": "tmp.elementBossHeatDown && tmp.elementBossColdDown && tmp.elementBossShockDown && tmp.elementBossWaveDown",
             "thenStep": [
               {
-                "mode": "SLOW",
-                "type": "PAUSE_BGM"
-              },
-              {
-                "value": false,
-                "type": "SET_FORCE_COMBAT"
+                "entity": {
+                  "global": true,
+                  "name": "element-boss-shock"
+                },
+                "offsetX": 0,
+                "offsetY": 0,
+                "speed": "FAST",
+                "transition": "EASE_IN_OUT",
+                "wait": true,
+                "waitSkip": 0,
+                "zoom": 1,
+                "type": "SET_CAMERA_TARGET"
               }
             ]
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
           },
           {
             "entity": {
@@ -900,44 +504,7 @@
           },
           {
             "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "volume": 1,
-            "name": "",
-            "loop": false,
-            "offset": 0,
-            "startTime": 0,
-            "type": "PLAY_SOUND",
-            "sound": "media/sound/scenes/designer-emerge.ogg"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "alpha": 1,
-            "time": 3,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 2,
-            "type": "WAIT"
-          },
-          {
-            "name": "slow",
-            "factor": 0.2,
-            "time": 2,
-            "type": "ADD_SLOW_MOTION"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 2,
+            "time": 4,
             "type": "WAIT"
           },
           {
@@ -948,59 +515,9 @@
             "type": "CLEAR_EFFECTS"
           },
           {
-            "name": "slow",
-            "time": 0.2,
-            "type": "CLEAR_SLOW_MOTION"
-          },
-          {
             "ignoreSlowDown": true,
             "type": "WAIT",
-            "time": 0.2
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "duration": 0,
-            "align": "CENTER",
-            "group": "",
-            "wait": false,
-            "waitSkip": 0,
-            "effect": {
-              "sheet": "enemies.boss-defeat",
-              "name": "dieSparkle"
-            },
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "type": "SHOW_EFFECT"
-          },
-          {
-            "ignoreSlowDown": false,
-            "type": "WAIT",
-            "time": 0.05
-          },
-          {
-            "alpha": 0,
-            "time": 1.5,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 1.5,
-            "type": "WAIT"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "type": "REMOVE_PLAYER_CAMERA_TARGET"
+            "time": 2.75
           },
           {
             "entity": {
@@ -1010,29 +527,10 @@
             "type": "MANUAL_COMBATANT_KILL"
           },
           {
-            "entity": {
-              "player": true
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
-          },
-          {
             "changeType": "set",
             "type": "CHANGE_VAR_BOOL",
             "varName": "tmp.elementBossShockDefeated",
             "value": true
-          },
-          {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": false
           }
         ]
       }
@@ -1044,67 +542,18 @@
       "level": 0,
       "settings": {
         "name": "waveBossDown",
-        "eventType": "COMBAT_CUTSCENE",
-        "endCondition": "tmp.elementBossWaveDefeated",
+        "eventType": "PARALLEL",
+        "mapId": "1004",
+        "endCondition": "false",
         "startCondition": "tmp.elementBossWaveDown",
-        "triggerType": "ALWAYS",
+        "triggerType": "ONCE_PER_ENTRY",
         "event": [
           {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": true
-          },
-          {
             "entity": {
               "global": true,
-              "name": "element-boss-heat"
+              "name": "element-boss-wave"
             },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-cold"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-shock"
-            },
-            "action": [
-              {
-                "time": 0.1,
-                "type": "WAIT"
-              }
-            ],
-            "repeating": false,
-            "wait": false,
-            "keepState": false,
-            "immediately": false,
-            "type": "DO_ACTION"
+            "type": "REMOVE_PLAYER_CAMERA_TARGET"
           },
           {
             "withElse": false,
@@ -1112,28 +561,20 @@
             "condition": "tmp.elementBossHeatDown && tmp.elementBossColdDown && tmp.elementBossShockDown && tmp.elementBossWaveDown",
             "thenStep": [
               {
-                "mode": "SLOW",
-                "type": "PAUSE_BGM"
-              },
-              {
-                "value": false,
-                "type": "SET_FORCE_COMBAT"
+                "entity": {
+                  "global": true,
+                  "name": "element-boss-wave"
+                },
+                "offsetX": 0,
+                "offsetY": 0,
+                "speed": "FAST",
+                "transition": "EASE_IN_OUT",
+                "wait": true,
+                "waitSkip": 0,
+                "zoom": 1,
+                "type": "SET_CAMERA_TARGET"
               }
             ]
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
           },
           {
             "entity": {
@@ -1158,44 +599,7 @@
           },
           {
             "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "volume": 1,
-            "name": "",
-            "loop": false,
-            "offset": 0,
-            "startTime": 0,
-            "type": "PLAY_SOUND",
-            "sound": "media/sound/scenes/designer-emerge.ogg"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 0.5,
-            "type": "WAIT"
-          },
-          {
-            "alpha": 1,
-            "time": 3,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": false,
-            "time": 2,
-            "type": "WAIT"
-          },
-          {
-            "name": "slow",
-            "factor": 0.2,
-            "time": 2,
-            "type": "ADD_SLOW_MOTION"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 2,
+            "time": 4,
             "type": "WAIT"
           },
           {
@@ -1206,59 +610,9 @@
             "type": "CLEAR_EFFECTS"
           },
           {
-            "name": "slow",
-            "time": 0.2,
-            "type": "CLEAR_SLOW_MOTION"
-          },
-          {
             "ignoreSlowDown": true,
             "type": "WAIT",
-            "time": 0.2
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "duration": 0,
-            "align": "CENTER",
-            "group": "",
-            "wait": false,
-            "waitSkip": 0,
-            "effect": {
-              "sheet": "enemies.boss-defeat",
-              "name": "dieSparkle"
-            },
-            "offset": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "type": "SHOW_EFFECT"
-          },
-          {
-            "ignoreSlowDown": false,
-            "type": "WAIT",
-            "time": 0.05
-          },
-          {
-            "alpha": 0,
-            "time": 1.5,
-            "lighter": true,
-            "type": "SET_OVERLAY",
-            "color": "white"
-          },
-          {
-            "ignoreSlowDown": true,
-            "time": 1.5,
-            "type": "WAIT"
-          },
-          {
-            "entity": {
-              "global": true,
-              "name": "element-boss-wave"
-            },
-            "type": "REMOVE_PLAYER_CAMERA_TARGET"
+            "time": 2.75
           },
           {
             "entity": {
@@ -1268,29 +622,10 @@
             "type": "MANUAL_COMBATANT_KILL"
           },
           {
-            "entity": {
-              "player": true
-            },
-            "offsetX": 0,
-            "offsetY": 0,
-            "speed": "FAST",
-            "transition": "EASE_IN_OUT",
-            "wait": true,
-            "waitSkip": 0,
-            "zoom": 1,
-            "type": "SET_CAMERA_TARGET"
-          },
-          {
             "changeType": "set",
             "type": "CHANGE_VAR_BOOL",
             "varName": "tmp.elementBossWaveDefeated",
             "value": true
-          },
-          {
-            "changeType": "set",
-            "type": "CHANGE_VAR_BOOL",
-            "varName": "tmp.elementBossCutscenePlaying",
-            "value": false
           }
         ]
       }
