@@ -1,0 +1,10 @@
+{
+    "id": "element-boss",
+    "version": "0.1.2",
+    "title": "Element Boss",
+    "description": "Adds a new boss battle to the game.",
+    "repository": "https://github.com/krypciak/cc-element-boss",
+    "tags": ["boss"],
+    "authors": "sgrunt",
+    "main": "mod.js"
+}

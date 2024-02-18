@@ -1,3 +1,10 @@
+# ORIGINAL MOD MADE BY [sgrunt](https://github.com/sgrunt)
+
+All rights belong to sgrunt.  
+This is just a repackaging of the mod to work in newer versions of ccloader.
+
+# ORIGIANL README:
+
 # CrossCode Element Boss
 
 A conceptual boss design for CrossCode.
